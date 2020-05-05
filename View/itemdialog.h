@@ -15,6 +15,7 @@ public:
 
 private slots:
     void itemChangeClicked();
+    void cancelClicked();
 
 private:
     QDialog* itemDialog;
@@ -23,9 +24,17 @@ private:
     QComboBox* departmentComboBox;
     QLineEdit* roomNumLineEdit;
     QLineEdit* phoneLineEdit;
+    QHBoxLayout* buttonsHBLayout;
     QPushButton* changeButton;
+    QPushButton* saveButton;
+    QPushButton* cancelButton;
     QPushButton* deleteButton;
-    QPushButton* closeButton;
+
+    QString nameText;
+    QString positionText;
+    QString departmentText;
+    QString roomNumberText;
+    QString phoneText;
 };
 
 #endif // ITEMDIALOG_H
