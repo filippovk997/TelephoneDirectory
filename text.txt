@@ -1,0 +1,10 @@
+class ListContacts
+    class Contact
+    
+class DBManager
+
+class Window
+    class viewListContacts
+    class viewContact
+    class findContact
+    class addContact
