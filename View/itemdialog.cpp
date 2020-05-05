@@ -1,7 +1,8 @@
 #include "itemdialog.h"
 
-ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* lc, QWidget* parent)
+ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWidget* parent)
     : QDialog(parent)
+    , lc(listContact)
 {
     QModelIndex nameRowIndex = index.sibling(index.row(), 1);
     QModelIndex positionRowIndex = index.sibling(index.row(), 2);
@@ -48,10 +49,16 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* lc, QWidget* pare
 
     changeButton = new QPushButton(tr("Изменить"));
     deleteButton = new QPushButton(tr("Удалить"));
-
+    saveButton = new QPushButton(tr("Сохранить"));
+    cancelButton = new QPushButton(tr("Отменить"));
 
     buttonsHBLayout->addWidget(changeButton);
     buttonsHBLayout->addWidget(deleteButton);
+    buttonsHBLayout->addWidget(saveButton);
+    buttonsHBLayout->addWidget(cancelButton);
+
+    saveButton->hide();
+    cancelButton->hide();
 
     layout->addRow(nameLabel, nameLineEdit);
     layout->addRow(positionLabel, positionComboBox);
@@ -66,6 +73,8 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* lc, QWidget* pare
     itemDialog->show();
 
     connect(changeButton, &QPushButton::clicked, this, &ItemDialog::itemChangeClicked);
+    connect(saveButton, &QPushButton::clicked, this, &ItemDialog::itemSaveChangeClicked);
+    connect(cancelButton, &QPushButton::clicked, this, &ItemDialog::cancelClicked);
 }
 
 void ItemDialog::itemChangeClicked()
@@ -82,38 +91,63 @@ void ItemDialog::itemChangeClicked()
     roomNumLineEdit->setReadOnly(false);
     phoneLineEdit->setReadOnly(false);
 
-    buttonsHBLayout->removeWidget(changeButton);
-    buttonsHBLayout->removeWidget(deleteButton);
+    changeButton->hide();
+    deleteButton->hide();
 
-    saveButton = new QPushButton(tr("Сохранить"));
-    cancelButton = new QPushButton(tr("Отменить"));
+    saveButton->show();
+    cancelButton->show();
+}
 
-    buttonsHBLayout->addWidget(saveButton);
-    buttonsHBLayout->addWidget(cancelButton);
+void ItemDialog::itemSaveChangeClicked()
+{
+    Contact oldValues(nameText, positionText, departmentText, roomNumberText.toInt(), phoneText);
+    nameText = nameLineEdit->text();
+    positionText = positionComboBox->currentText();
+    departmentText = departmentComboBox->currentText();
+    roomNumberText = roomNumLineEdit->text();
+    phoneText = phoneLineEdit->text();
+    Contact newValues(nameText, positionText, departmentText, roomNumberText.toInt(), phoneText);
 
-    connect(cancelButton, &QPushButton::clicked, this, &ItemDialog::cancelClicked);
+    if(lc->changeContact(newValues, oldValues)) {
+        nameLineEdit->setFocus(Qt::NoFocusReason);
+        nameLineEdit->setReadOnly(true);
+        positionComboBox->setDisabled(true);
+        departmentComboBox->setDisabled(true);
+        roomNumLineEdit->setReadOnly(true);
+        phoneLineEdit->setReadOnly(true);
+
+        saveButton->hide();
+        cancelButton->hide();
+
+        changeButton->show();
+        deleteButton->show();
+    }
+    else {
+        cancelClicked();
+    }
 }
 
 void ItemDialog::cancelClicked()
 {
     nameLineEdit->setText(nameText);
-    nameLineEdit->setReadOnly(false);
+    nameLineEdit->setFocus(Qt::NoFocusReason);
+    nameLineEdit->setReadOnly(true);
 
     positionComboBox->setCurrentText(positionText);
-    positionComboBox->setDisabled(false);
+    positionComboBox->setDisabled(true);
 
     departmentComboBox->setCurrentText(departmentText);
-    departmentComboBox->setDisabled(false);
+    departmentComboBox->setDisabled(true);
 
     roomNumLineEdit->setText(roomNumberText);
-    roomNumLineEdit->setReadOnly(false);
+    roomNumLineEdit->setReadOnly(true);
 
     phoneLineEdit->setText(phoneText);
-    phoneLineEdit->setReadOnly(false);
+    phoneLineEdit->setReadOnly(true);
 
-    buttonsHBLayout->removeWidget(saveButton);
-    buttonsHBLayout->removeWidget(cancelButton);
+    saveButton->hide();
+    cancelButton->hide();
 
-    buttonsHBLayout->addWidget(changeButton);
-    buttonsHBLayout->addWidget(deleteButton);
+    changeButton->show();
+    deleteButton->show();
 }

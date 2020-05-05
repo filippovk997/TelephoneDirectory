@@ -10,11 +10,13 @@ class ItemDialog : public QDialog
 {
 public:
     ItemDialog(const QModelIndex& index,
-               ListContacts* lc,
+               ListContacts* listContacts,
                QWidget* parent = nullptr);
 
 private slots:
     void itemChangeClicked();
+    void itemDeleteClicked();
+    void itemSaveChangeClicked();
     void cancelClicked();
 
 private:
@@ -29,6 +31,8 @@ private:
     QPushButton* saveButton;
     QPushButton* cancelButton;
     QPushButton* deleteButton;
+
+    ListContacts* lc;
 
     QString nameText;
     QString positionText;
