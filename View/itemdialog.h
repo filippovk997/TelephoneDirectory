@@ -23,7 +23,6 @@ private slots:
 private:
     void updateInterface(Mode mode);
 
-    QDialog* itemDialog;
     QLineEdit* nameLineEdit;
     QComboBox* positionComboBox;
     QComboBox* departmentComboBox;

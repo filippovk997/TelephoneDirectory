@@ -16,7 +16,6 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
     QString roomNumber = roomNumberRowIndex.data(Qt::DisplayRole).toString();
     QString phone = phoneRowIndex.data(Qt::DisplayRole).toString();
 
-    itemDialog = new QDialog;
     QFormLayout* layout = new QFormLayout;
 
     QLabel* nameLabel = new QLabel("ФИО:");
@@ -59,10 +58,10 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
     layout->addRow(phoneLabel, phoneLineEdit);
     layout->addRow(buttonsHBLayout);
 
-    itemDialog->setLayout(layout);
-    itemDialog->setFixedSize(QSize(350, 175));
-    itemDialog->setWindowTitle(name);
-    itemDialog->show();
+    setLayout(layout);
+    setFixedSize(QSize(350, 175));
+    setWindowTitle(name);
+    show();
 
     updateInterface(ViewMode);
 
