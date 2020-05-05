@@ -13,6 +13,7 @@ class QLineEdit;
 class QComboBox;
 class QPushButton;
 QT_END_NAMESPACE
+class Contact;
 
 class AddDialog : public QDialog
 {
@@ -20,9 +21,19 @@ public:
     AddDialog(ListContacts* listContacts,
               QWidget* parent = nullptr);
 
+    Contact getAddContact();
+private slots:
+    void addClicked();
+
 private:
+    QLineEdit* nameLineEdit;
+    QComboBox* positionComboBox;
+    QComboBox* departmentComboBox;
+    QLineEdit* roomNumLineEdit;
+    QLineEdit* phoneLineEdit;
     QPushButton* addButton;
 
+    Contact contact;
     ListContacts* lc;
 };
 
