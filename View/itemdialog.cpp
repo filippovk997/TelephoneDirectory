@@ -66,14 +66,7 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* lc, QWidget* pare
     itemDialog->setLayout(layout);
     itemDialog->setFixedSize(QSize(350, 175));
     itemDialog->setWindowTitle(name);
-}
-
-ItemDialog *ItemDialog::createItemDialog(const QModelIndex &index, ListContacts *lc, QWidget *parent)
-{
-    if (itemDialog != nullptr) {
-        delete itemDialog;
-    }
-    return (new ItemDialog(index, lc, parent));
+    itemDialog->show();
 }
 
 void ItemDialog::itemChangeClicked()

@@ -13,10 +13,6 @@ public:
                ListContacts* lc,
                QWidget* parent = nullptr);
 
-    ItemDialog* createItemDialog(const QModelIndex& index,
-                                 ListContacts* lc,
-                                 QWidget* parent = nullptr);
-
 private slots:
     void itemChangeClicked();
 

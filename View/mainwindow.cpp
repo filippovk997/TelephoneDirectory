@@ -53,8 +53,6 @@ void MainWindow::treeContacts()
     treeView = new QTreeView;
     treeView->setModel(model);
 
-    itemDialog = new ItemDialog(treeView->rootIndex(), lc, this);
-
     connect(treeView, &QAbstractItemView::doubleClicked, this, &MainWindow::openItemDialogDoubleClicked);
 
     treeView->setColumnWidth(1, 150);
@@ -145,8 +143,7 @@ void MainWindow::findWindow()
         }
         else {
             findDialog->close();
-            itemDialog = itemDialog->createItemDialog(findIndex, lc, this);
-            itemDialog->show();
+            itemDialog = new ItemDialog(findIndex, lc, this);
         }
     }
 }
@@ -213,9 +210,7 @@ void MainWindow::openItemDialogDoubleClicked()
         return;
     }
 
-    itemDialog = itemDialog->createItemDialog(index, lc, this);
-    itemDialog->show();
-
+    itemDialog = new ItemDialog(index, lc, this);
 }
 
 void MainWindow::openItemChangeWindow()
