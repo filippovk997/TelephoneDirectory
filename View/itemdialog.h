@@ -12,6 +12,7 @@ public:
     ItemDialog(const QModelIndex& index,
                ListContacts* listContacts,
                QWidget* parent = nullptr);
+    enum Mode { ViewMode, ChangeMode };
 
 private slots:
     void itemChangeClicked();
@@ -20,6 +21,8 @@ private slots:
     void cancelClicked();
 
 private:
+    void updateInterface(Mode mode);
+
     QDialog* itemDialog;
     QLineEdit* nameLineEdit;
     QComboBox* positionComboBox;

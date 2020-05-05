@@ -21,29 +21,24 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
 
     QLabel* nameLabel = new QLabel("ФИО:");
     nameLineEdit = new QLineEdit(name);
-    nameLineEdit->setReadOnly(true);
 
     QLabel* positionLabel = new QLabel("Должность:");
     positionComboBox = new QComboBox;
     positionComboBox->addItem(tr(" - "));
     positionComboBox->addItems(lc->getPositions());
     positionComboBox->setCurrentText(position);
-    positionComboBox->setDisabled(true);
 
     QLabel* departmentLabel = new QLabel("Подразделение:");
     departmentComboBox = new QComboBox;
     departmentComboBox->addItem(tr(" - "));
     departmentComboBox->addItems(lc->getDepartments());
     departmentComboBox->setCurrentText(department);
-    departmentComboBox->setDisabled(true);
 
     QLabel* roomNumLabel = new QLabel("Номер помещения:");
     roomNumLineEdit = new QLineEdit(roomNumber);
-    roomNumLineEdit->setReadOnly(true);
 
     QLabel* phoneLabel = new QLabel("Номер телефона:");
     phoneLineEdit = new QLineEdit(phone);
-    phoneLineEdit->setReadOnly(true);
 
     buttonsHBLayout = new QHBoxLayout;
 
@@ -57,9 +52,6 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
     buttonsHBLayout->addWidget(saveButton);
     buttonsHBLayout->addWidget(cancelButton);
 
-    saveButton->hide();
-    cancelButton->hide();
-
     layout->addRow(nameLabel, nameLineEdit);
     layout->addRow(positionLabel, positionComboBox);
     layout->addRow(departmentLabel, departmentComboBox);
@@ -71,6 +63,8 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
     itemDialog->setFixedSize(QSize(350, 175));
     itemDialog->setWindowTitle(name);
     itemDialog->show();
+
+    updateInterface(ViewMode);
 
     connect(changeButton, &QPushButton::clicked, this, &ItemDialog::itemChangeClicked);
     connect(saveButton, &QPushButton::clicked, this, &ItemDialog::itemSaveChangeClicked);
@@ -85,17 +79,7 @@ void ItemDialog::itemChangeClicked()
     roomNumberText = roomNumLineEdit->text();
     phoneText = phoneLineEdit->text();
 
-    nameLineEdit->setReadOnly(false);
-    positionComboBox->setDisabled(false);
-    departmentComboBox->setDisabled(false);
-    roomNumLineEdit->setReadOnly(false);
-    phoneLineEdit->setReadOnly(false);
-
-    changeButton->hide();
-    deleteButton->hide();
-
-    saveButton->show();
-    cancelButton->show();
+    updateInterface(ChangeMode);
 }
 
 void ItemDialog::itemSaveChangeClicked()
@@ -108,7 +92,32 @@ void ItemDialog::itemSaveChangeClicked()
     phoneText = phoneLineEdit->text();
     Contact newValues(nameText, positionText, departmentText, roomNumberText.toInt(), phoneText);
 
-    if(lc->changeContact(newValues, oldValues)) {
+    if(!lc->changeContact(newValues, oldValues)) {
+//        QMessageBox::information(tr("Not changed"),)
+    }
+
+    updateInterface(ViewMode);
+}
+
+void ItemDialog::cancelClicked()
+{
+    nameLineEdit->setText(nameText);
+    positionComboBox->setCurrentText(positionText);
+    departmentComboBox->setCurrentText(departmentText);
+    roomNumLineEdit->setText(roomNumberText);
+    phoneLineEdit->setText(phoneText);
+
+    updateInterface(ViewMode);
+}
+
+void ItemDialog::updateInterface(ItemDialog::Mode mode)
+{
+    Mode currentMode = mode;
+
+    switch (currentMode) {
+
+    case ViewMode:
+
         nameLineEdit->setFocus(Qt::NoFocusReason);
         nameLineEdit->setReadOnly(true);
         positionComboBox->setDisabled(true);
@@ -116,38 +125,26 @@ void ItemDialog::itemSaveChangeClicked()
         roomNumLineEdit->setReadOnly(true);
         phoneLineEdit->setReadOnly(true);
 
-        saveButton->hide();
-        cancelButton->hide();
-
         changeButton->show();
         deleteButton->show();
+
+        saveButton->hide();
+        cancelButton->hide();
+        break;
+
+    case ChangeMode:
+
+        nameLineEdit->setReadOnly(false);
+        positionComboBox->setDisabled(false);
+        departmentComboBox->setDisabled(false);
+        roomNumLineEdit->setReadOnly(false);
+        phoneLineEdit->setReadOnly(false);
+
+        saveButton->show();
+        cancelButton->show();
+
+        changeButton->hide();
+        deleteButton->hide();
+        break;
     }
-    else {
-        cancelClicked();
-    }
-}
-
-void ItemDialog::cancelClicked()
-{
-    nameLineEdit->setText(nameText);
-    nameLineEdit->setFocus(Qt::NoFocusReason);
-    nameLineEdit->setReadOnly(true);
-
-    positionComboBox->setCurrentText(positionText);
-    positionComboBox->setDisabled(true);
-
-    departmentComboBox->setCurrentText(departmentText);
-    departmentComboBox->setDisabled(true);
-
-    roomNumLineEdit->setText(roomNumberText);
-    roomNumLineEdit->setReadOnly(true);
-
-    phoneLineEdit->setText(phoneText);
-    phoneLineEdit->setReadOnly(true);
-
-    saveButton->hide();
-    cancelButton->hide();
-
-    changeButton->show();
-    deleteButton->show();
 }
