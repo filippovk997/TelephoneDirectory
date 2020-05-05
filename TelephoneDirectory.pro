@@ -21,6 +21,7 @@ SOURCES += \
     Data/listcontacts.cpp \
     TreeModel/treeitem.cpp \
     TreeModel/treemodel.cpp \
+    View/adddialog.cpp \
     View/finddialog.cpp \
     View/itemdialog.cpp \
     View/mainwindow.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     Data/listcontacts.h \
     TreeModel/treeitem.h \
     TreeModel/treemodel.h \
+    View/adddialog.h \
     View/finddialog.h \
     View/itemdialog.h \
     View/mainwindow.h \
