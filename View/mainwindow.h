@@ -1,20 +1,24 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QTreeView>
+
+QT_BEGIN_NAMESPACE
+class QFormLayout;
+class QHBoxLayout;
+class QLabel;
+class QLineEdit;
+class QComboBox;
+class QPushButton;
+QT_END_NAMESPACE
+
 #include "../TreeModel/treemodel.h"
 #include "../Data/listcontacts.h"
 #include "itemdialog.h"
 #include "finddialog.h"
-
-#include <QMainWindow>
-#include <QTreeView>
-#include <QFormLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QMessageBox>
+#include "adddialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,19 +26,14 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
 
 private:
     void treeContacts();
-    void itemWindow(const QModelIndex& index);
-    void itemChangeWindow(const QModelIndex& index);
     void findWindow();
     void addWindow();
 
     QTreeView* treeView;
     TreeModel* model;
-    QVBoxLayout* mainLayout;
-    QHBoxLayout* buttonsLayout;
     QPushButton* findMainButton;
     QPushButton* addMainButton;
     QPushButton* importMainButton;
@@ -42,18 +41,12 @@ private:
 
     ItemDialog* itemDialog;
     FindDialog* findDialog;
-    QWidget* findWidget;
-    QWidget* addWidget;
-    QWidget* itemWidget;
-    QWidget* itemChangeWidget;
+    AddDialog* addDialog;
 
     ListContacts* lc;
+
 private slots:
-    void cancelWindow();
     void openItemDialogDoubleClicked();
-    void openItemChangeWindow();
-    void openFindWindow();
-    void openAddWindow();
-    void saveItemChange();
+
 };
 #endif // MAINWINDOW_H

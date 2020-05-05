@@ -1,23 +1,17 @@
-#include <memory>
-
 #include "mainwindow.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    // get data
     lc = new ListContacts;
     lc->getFromDBData();
 
     treeContacts();
-//    findWindow();
-//    addWindow();
 
     QWidget* mainWidget = new QWidget;
 
-    mainLayout = new QVBoxLayout;
-    buttonsLayout = new QHBoxLayout;
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    QHBoxLayout* buttonsLayout = new QHBoxLayout;
 
     findMainButton = new QPushButton(tr("Искать"));
     addMainButton = new QPushButton(tr("Добавить"));
@@ -25,9 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     exportMainButton = new QPushButton(tr("Экспорт"));
 
     findDialog = new FindDialog(lc, this);
-
-    connect(findMainButton, &QAbstractButton::clicked, this, &MainWindow::findWindow);
-    connect(addMainButton, &QAbstractButton::clicked, this, &MainWindow::addWindow);
+    addDialog = new AddDialog(lc, this);
 
     buttonsLayout->addWidget(findMainButton);
     buttonsLayout->addWidget(addMainButton);
@@ -41,10 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(mainWidget);
     setMinimumSize(600, 500);
     setWindowTitle("Телефонный справочник организации");
-}
 
-MainWindow::~MainWindow()
-{
+    connect(findMainButton, &QAbstractButton::clicked, this, &MainWindow::findWindow);
+    connect(addMainButton, &QAbstractButton::clicked, this, &MainWindow::addWindow);
 }
 
 void MainWindow::treeContacts()
@@ -57,74 +48,6 @@ void MainWindow::treeContacts()
 
     treeView->setColumnWidth(1, 150);
     treeView->expandAll();
-}
-
-void MainWindow::itemChangeWindow(const QModelIndex &index)
-{
-    QModelIndex nameRowIndex = index.sibling(index.row(), 1);
-    QModelIndex positionRowIndex = index.sibling(index.row(), 2);
-    QModelIndex departmentRowIndex = index.sibling(index.row(), 0);
-    QModelIndex roomNumberRowIndex = index.sibling(index.row(), 3);
-    QModelIndex phoneRowIndex = index.sibling(index.row(), 4);
-
-    QString name = nameRowIndex.data(Qt::DisplayRole).toString();
-    QString position = positionRowIndex.data(Qt::DisplayRole).toString();
-    QString department = departmentRowIndex.data(Qt::DisplayRole).toString();
-    QString roomNumber = roomNumberRowIndex.data(Qt::DisplayRole).toString();
-    QString phone = phoneRowIndex.data(Qt::DisplayRole).toString();
-
-    itemChangeWidget = new QWidget;
-    QFormLayout* layout = new QFormLayout;
-
-    QLabel* nameLabel = new QLabel("ФИО:");
-    QLineEdit* nameLineEdit = new QLineEdit(name);
-
-    QLabel* positionLabel = new QLabel("Должность:");
-    QComboBox* positionComboBox = new QComboBox;
-    positionComboBox->addItem(tr(" - "));
-    positionComboBox->addItems(lc->getPositions());
-    positionComboBox->setCurrentText(position);
-
-    QLabel* departmentLabel = new QLabel("Подразделение:");
-    QComboBox* departmentComboBox = new QComboBox;
-    departmentComboBox->addItem(tr(" - "));
-    departmentComboBox->addItems(lc->getDepartments());
-    departmentComboBox->setCurrentText(department);
-
-    QLabel* roomNumLabel = new QLabel("Номер помещения:");
-    QLineEdit* roomNumLineEdit = new QLineEdit(roomNumber);
-
-    QLabel* phoneLabel = new QLabel("Номер телефона:");
-    QLineEdit* phoneLineEdit = new QLineEdit(phone);
-
-    nameLineEdit->setReadOnly(false);
-    positionComboBox->setDisabled(false);
-    departmentComboBox->setDisabled(false);
-    roomNumLineEdit->setReadOnly(false);
-    phoneLineEdit->setReadOnly(false);
-
-    QHBoxLayout* buttonsHBLayout = new QHBoxLayout;
-
-    QPushButton* saveButton = new QPushButton(tr("Сохранить"));
-    QPushButton* cancelButton = new QPushButton(tr("Отменить"));
-
-    connect(saveButton, &QAbstractButton::clicked, this, &MainWindow::saveItemChange);
-//    connect(cancelButton, &QAbstractButton::clicked, this, &MainWindow::cancelWindow);
-
-    buttonsHBLayout->addWidget(saveButton);
-    buttonsHBLayout->addWidget(cancelButton);
-
-    layout->addRow(nameLabel, nameLineEdit);
-    layout->addRow(positionLabel, positionComboBox);
-    layout->addRow(departmentLabel, departmentComboBox);
-    layout->addRow(roomNumLabel, roomNumLineEdit);
-    layout->addRow(phoneLabel, phoneLineEdit);
-    layout->addRow(buttonsHBLayout);
-
-    itemChangeWidget->setLayout(layout);
-    itemChangeWidget->setFixedSize(QSize(350, 175));
-    itemChangeWidget->setWindowTitle(name);
-    itemChangeWidget->show();
 }
 
 void MainWindow::findWindow()
@@ -150,51 +73,7 @@ void MainWindow::findWindow()
 
 void MainWindow::addWindow()
 {
-    addWidget = new QWidget;
-    QFormLayout* layout = new QFormLayout;
-
-    QLabel* nameLabel = new QLabel("ФИО:");
-    QLineEdit* nameLineEdit = new QLineEdit;
-
-    QLabel* positionLabel = new QLabel("Должность:");
-    QComboBox* positionComboBox = new QComboBox;
-    positionComboBox->addItem(tr(" - "));
-    positionComboBox->addItems(lc->getPositions());
-
-    QLabel* departmentLabel = new QLabel("Подразделение:");
-    QComboBox* departmentComboBox = new QComboBox;
-    departmentComboBox->addItem(tr(" - "));
-    departmentComboBox->addItems(lc->getDepartments());
-
-    QLabel* roomNumLabel = new QLabel("Номер помещения:");
-    QLineEdit* roomNumLineEdit = new QLineEdit;
-
-    QLabel* phoneLabel = new QLabel("Номер телефона:");
-    QLineEdit* phoneLineEdit = new QLineEdit;
-
-    QHBoxLayout* buttonsHBLayout = new QHBoxLayout;
-
-    QPushButton* addButton = new QPushButton(tr("Добавить"));
-    QPushButton* closeButton = new QPushButton(tr("Закрыть"));
-
-    buttonsHBLayout->addWidget(addButton);
-    buttonsHBLayout->addWidget(closeButton);
-
-    layout->addRow(nameLabel, nameLineEdit);
-    layout->addRow(positionLabel, positionComboBox);
-    layout->addRow(departmentLabel, departmentComboBox);
-    layout->addRow(roomNumLabel, roomNumLineEdit);
-    layout->addRow(phoneLabel, phoneLineEdit);
-    layout->addRow(buttonsHBLayout);
-
-    addWidget->setLayout(layout);
-    addWidget->setWindowTitle("Добавить контакт");
-    addWidget->show();
-}
-
-void MainWindow::cancelWindow()
-{
-
+    addDialog->show();
 }
 
 void MainWindow::openItemDialogDoubleClicked()
@@ -212,25 +91,3 @@ void MainWindow::openItemDialogDoubleClicked()
 
     itemDialog = new ItemDialog(index, lc, this);
 }
-
-void MainWindow::openItemChangeWindow()
-{
-//    itemWidget->close();
-    itemChangeWindow(treeView->currentIndex());
-}
-
-void MainWindow::openFindWindow()
-{
-
-}
-
-void MainWindow::openAddWindow()
-{
-
-}
-
-void MainWindow::saveItemChange()
-{
-
-}
-
