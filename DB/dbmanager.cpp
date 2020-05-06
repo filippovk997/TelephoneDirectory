@@ -14,6 +14,7 @@ DBManager::DBManager()
 
 DBManager::~DBManager()
 {
+
 }
 
 bool DBManager::createConnection()
@@ -81,7 +82,6 @@ bool DBManager::createTable()
 
 std::vector<Contact> DBManager::getListContacts()
 {
-
     QSqlQuery query("SELECT * FROM Employee");
     QSqlRecord rec = query.record();
 
@@ -91,14 +91,75 @@ std::vector<Contact> DBManager::getListContacts()
     int roomNumberColumn = rec.indexOf("roomNumber");
     int phoneColumn = rec.indexOf("phone");
 
-    ListContacts lc;
+    std::vector<Contact> contacts;
     while (query.next()) {
-        lc.addContact(query.value(nameColumn).toString(),
-                      query.value(positionColumn).toString(),
-                      query.value(departmentColumn).toString(),
-                      query.value(roomNumberColumn).toInt(),
-                      query.value(phoneColumn).toString());
+        contacts.push_back(Contact(query.value(nameColumn).toString(),
+                                   query.value(positionColumn).toString(),
+                                   query.value(departmentColumn).toString(),
+                                   query.value(roomNumberColumn).toInt(),
+                                   query.value(phoneColumn).toString()));
     }
 
-    return lc.listContacts;
+    return contacts;
+}
+
+bool DBManager::updateItem(const Contact& newC, const Contact& oldC)
+{
+    QSqlQuery insertQuery;
+    insertQuery.prepare("UPDATE Employee SET "
+                        "name = :name, "
+                        "position = :position, "
+                        "department = :department, "
+                        "roomNumber = :roomNumber, "
+                        "phone = :phone "
+
+                        "WHERE name = :findName "
+                        "AND position = :findPosition "
+                        "AND department = :findDepartment "
+                        "AND roomNumber = :findRoomNumber "
+                        "AND phone = :findPhone");
+    insertQuery.bindValue(":name", newC.m_name);
+    insertQuery.bindValue(":position", newC.m_position);
+    insertQuery.bindValue(":department", newC.m_department);
+    insertQuery.bindValue(":roomNumber", QString::number(newC.m_roomNumber).toInt());
+    insertQuery.bindValue(":phone", newC.m_phone);
+
+    insertQuery.bindValue(":findName", oldC.m_name);
+    insertQuery.bindValue(":findPosition", oldC.m_position);
+    insertQuery.bindValue(":findDepartment", oldC.m_department);
+    insertQuery.bindValue(":findRoomNumber", QString::number(oldC.m_roomNumber).toInt());
+    insertQuery.bindValue(":findPhone", oldC.m_phone);
+
+    return insertQuery.exec();
+}
+
+bool DBManager::insertItem(const Contact &contact)
+{
+    QSqlQuery insertQuery;
+    insertQuery.prepare("INSERT INTO Employee (name, position, department, roomNumber, phone) "
+                        "VALUES (:name, :position, :department, :roomNumber, :phone)");
+    insertQuery.bindValue(":name", contact.m_name);
+    insertQuery.bindValue(":position", contact.m_position);
+    insertQuery.bindValue(":department", contact.m_department);
+    insertQuery.bindValue(":roomNumber", QString::number(contact.m_roomNumber));
+    insertQuery.bindValue(":phone", contact.m_phone);
+    return insertQuery.exec();
+}
+
+bool DBManager::deleteItem(const Contact &contact)
+{
+    QSqlQuery insertQuery;
+    insertQuery.prepare("DELETE FROM Employee "
+                        "WHERE name = :findName "
+                        "AND position = :findPosition "
+                        "AND department = :findDepartment "
+                        "AND roomNumber = :findRoomNumber "
+                        "AND phone = :findPhone");
+    insertQuery.bindValue(":findName", contact.m_name);
+    insertQuery.bindValue(":findPosition", contact.m_position);
+    insertQuery.bindValue(":findDepartment", contact.m_department);
+    insertQuery.bindValue(":findRoomNumber", QString::number(contact.m_roomNumber));
+    insertQuery.bindValue(":findPhone", contact.m_phone);
+
+    return insertQuery.exec();
 }
