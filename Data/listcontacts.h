@@ -1,31 +1,38 @@
 #ifndef LISTCONTACTS_H
 #define LISTCONTACTS_H
 
-#include "contact.h"
-
 #include <vector>
-
 #include <QString>
 #include <QStringList>
 #include <QDebug>
 
-class ListContacts
+#include "../DB/dbmanager.h"
+#include "contact.h"
+
+class DBManager;
+class Contact;
+
+class ListContacts : public QObject
 {
+    Q_OBJECT
+
 public:
     ListContacts();
 
-    void addContact(const Contact& c);
-    void addContact(QString name, QString position, QString department, long roomNum, QString phone);
-    void deleteContact(const int index);
-    void changeContact(const Contact& newC, const int index);
-    int findContact(const QString name, const QString department);
+    bool addContact(const Contact& contact);
+    bool deleteContact(const Contact& contact);
+    bool changeContact(const Contact& newC, const Contact& oldC);
     void show();
 
-    void getFromDBData();
     QString toTreeModel() const;
     QStringList getPositions() const;
     QStringList getDepartments() const;
 
+signals:
+    void changeContacts();
+
+private:
+    DBManager* dbm;
     std::vector<Contact> listContacts {};
 };
 
