@@ -19,10 +19,6 @@ FindDialog::FindDialog(ListContacts* lc, QWidget* parent)
     QHBoxLayout* buttonsHBLayout = new QHBoxLayout;
 
     foundButton = new QPushButton(tr("Найти"));
-    connect(foundButton, &QPushButton::clicked,
-            this, &FindDialog::findClicked);
-    connect(foundButton, &QPushButton::clicked,
-            this, &FindDialog::accept);
 
     buttonsHBLayout->addWidget(foundButton);
 
@@ -35,6 +31,9 @@ FindDialog::FindDialog(ListContacts* lc, QWidget* parent)
     setLayout(layout);
     setFixedSize(QSize(210, 135));
     setWindowTitle(tr("Найти контакт"));
+
+    connect(foundButton, &QPushButton::clicked, this, &FindDialog::findClicked);
+    connect(foundButton, &QPushButton::clicked, this, &FindDialog::accept);
 }
 
 void FindDialog::findClicked()
@@ -44,6 +43,7 @@ void FindDialog::findClicked()
     if (name.isEmpty() || department == " - ") {
         QMessageBox::information(this, tr("Empty field"),
             tr("Please enter a name and select a department."));
+        contact = Contact();
         return;
     }
     else {

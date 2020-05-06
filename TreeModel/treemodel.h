@@ -78,6 +78,7 @@ public:
 
     QModelIndex findItem(const QString &name, const QString &department,
                          int nameColumn, int departmentColumn);
+    void updateData(const QString& data);
 
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);

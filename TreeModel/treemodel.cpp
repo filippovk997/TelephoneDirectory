@@ -105,6 +105,15 @@ QModelIndex TreeModel::findItem(const QString &name, const QString &department,
 
     return QModelIndex();
 }
+
+void TreeModel::updateData(const QString &data)
+{
+    delete rootItem;
+    rootItem = new TreeItem({tr("Подразделение"), tr("ФИО"),
+                             tr("Должность"), tr("Номер помещения"),
+                             tr("Номер телефона")});
+    setupModelData(data.split('\n'), rootItem);
+}
 //! [2]
 
 //! [3]

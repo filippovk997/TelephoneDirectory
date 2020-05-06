@@ -47,6 +47,7 @@ AddDialog::AddDialog(ListContacts *listContacts, QWidget *parent)
     setWindowTitle("Добавить контакт");
 
     connect(addButton, &QPushButton::clicked, this, &AddDialog::addClicked);
+    connect(addButton, &QPushButton::clicked, this, &AddDialog::accept);
 }
 
 void AddDialog::addClicked()
@@ -64,6 +65,7 @@ void AddDialog::addClicked()
         phone.isEmpty()) {
         QMessageBox::information(this, tr("Empty field"),
             tr("Please enter text in all fields."));
+        contact = Contact();
         return;
     }
     else {

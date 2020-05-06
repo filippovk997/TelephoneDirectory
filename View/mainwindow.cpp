@@ -4,9 +4,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     lc = new ListContacts;
-    lc->getFromDBData();
 
-    treeContacts();
+    contactsTree();
 
     QWidget* mainWidget = new QWidget;
 
@@ -38,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(addMainButton, &QAbstractButton::clicked, this, &MainWindow::addWindow);
 }
 
-void MainWindow::treeContacts()
+void MainWindow::contactsTree()
 {
     model = new TreeModel(lc->toTreeModel());
     treeView = new QTreeView;
@@ -50,11 +49,21 @@ void MainWindow::treeContacts()
     treeView->expandAll();
 }
 
+void MainWindow::updateTree()
+{
+    model->updateData(lc->toTreeModel());
+    treeView->reset();
+    treeView->expandAll();
+}
+
 void MainWindow::findWindow()
 {
     findDialog->show();
     if (findDialog->exec() == 1) {
         Contact findContact = findDialog->getFindContact();
+        if (findContact == Contact()) {
+            return;
+        }
         QModelIndex findIndex = model->findItem(findContact.m_name,
                                                 findContact.m_department, 1, 0);
         if (findIndex == QModelIndex()) {
@@ -74,6 +83,14 @@ void MainWindow::findWindow()
 void MainWindow::addWindow()
 {
     addDialog->show();
+    if (addDialog->exec() == 1) {
+        Contact addContact = addDialog->getAddContact();
+        if (addContact == Contact()) {
+            return;
+        }
+        lc->addContact(addContact);
+        updateTree();
+    }
 }
 
 void MainWindow::openItemDialogDoubleClicked()
@@ -90,4 +107,5 @@ void MainWindow::openItemDialogDoubleClicked()
     }
 
     itemDialog = new ItemDialog(index, lc, this);
+    connect(itemDialog, &ItemDialog::accepted, this, &MainWindow::updateTree);
 }

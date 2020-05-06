@@ -28,7 +28,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
 private:
-    void treeContacts();
+    void contactsTree();
+    void updateTree();
     void findWindow();
     void addWindow();
 

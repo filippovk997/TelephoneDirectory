@@ -66,7 +66,10 @@ ItemDialog::ItemDialog(const QModelIndex& index, ListContacts* listContact, QWid
     updateInterface(ViewMode);
 
     connect(changeButton, &QPushButton::clicked, this, &ItemDialog::itemChangeClicked);
+    connect(deleteButton, &QPushButton::clicked, this, &ItemDialog::itemDeleteClicked);
+    connect(deleteButton, &QPushButton::clicked, this, &ItemDialog::accept);
     connect(saveButton, &QPushButton::clicked, this, &ItemDialog::itemSaveChangeClicked);
+    connect(saveButton, &QPushButton::clicked, this, &ItemDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &ItemDialog::cancelClicked);
 }
 
@@ -79,6 +82,17 @@ void ItemDialog::itemChangeClicked()
     phoneText = phoneLineEdit->text();
 
     updateInterface(ChangeMode);
+}
+
+void ItemDialog::itemDeleteClicked()
+{
+    nameText = nameLineEdit->text();
+    positionText = positionComboBox->currentText();
+    departmentText = departmentComboBox->currentText();
+    roomNumberText = roomNumLineEdit->text();
+    phoneText = phoneLineEdit->text();
+
+    lc->deleteContact(Contact(nameText, positionText, departmentText, roomNumberText.toInt(), phoneText));
 }
 
 void ItemDialog::itemSaveChangeClicked()
