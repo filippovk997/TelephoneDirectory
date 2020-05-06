@@ -16,3 +16,12 @@ Contact::Contact(QString name, QString position, QString department,
                  , m_roomNumber(roomNum)
                  , m_phone(phone)
 { }
+
+bool Contact::operator==(const Contact &other)
+{
+    return (m_name       == other.m_name &&
+            m_position   == other.m_position &&
+            m_department == other.m_department &&
+            m_roomNumber == other.m_roomNumber &&
+            m_phone      == other.m_phone);
+}

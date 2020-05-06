@@ -10,6 +10,8 @@ public:
     Contact(QString name, QString position, QString department,
             long roomNum, QString phone);
 
+    bool operator==(const Contact& other);
+
     QString m_name;
     QString m_position;
     QString m_department;
