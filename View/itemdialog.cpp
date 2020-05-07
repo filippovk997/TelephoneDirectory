@@ -106,7 +106,13 @@ void ItemDialog::itemSaveChangeClicked()
     Contact newValues(nameText, positionText, departmentText, roomNumberText.toInt(), phoneText);
 
     if(!lc->changeContact(newValues, oldValues)) {
-//        QMessageBox::information(tr("Not changed"),)
+        QMessageBox::information(this, tr("Неверный ввод"),
+                                 tr("Введен неправильный формат данных. "
+                                    "Пример: ФИО: 'Иванов Иван Иванович', "
+                                    "Должность: 'Директор', "
+                                    "Подразделение: 'АБВ1', "
+                                    "Номер комнаты: 12345, "
+                                    "Номер телефона: '+79123456789'"));
     }
 
     updateInterface(ViewMode);

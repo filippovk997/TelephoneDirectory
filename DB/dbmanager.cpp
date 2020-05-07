@@ -1,10 +1,10 @@
-#include "dbmanager.h"
-
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QDebug>
 #include <QSettings>
 #include <QFile>
+
+#include "dbmanager.h"
 
 DBManager::DBManager()
 {
@@ -61,7 +61,7 @@ bool DBManager::createTable()
     QSqlQuery query("SELECT * FROM Employee");
 
     if (query.size() != -1) {
-        return true;
+        return false;
     }
 
     query.exec("CREATE TABLE Employee (name text, "
@@ -72,10 +72,6 @@ bool DBManager::createTable()
                "department, roomNumber, phone) VALUES"
                "('Иванов Иван Иванович', 'Директор', "
                "'NIL1', 26701, '+79279876551')");
-    query.exec("INSERT INTO Employee (name, position, "
-               "department, roomNumber, phone) VALUES"
-               "('Алексеев Алексей Алексеевич', 'Техник', "
-               "'NIL1', 20101, '+79279876562')");
     */
     return true;
 }

@@ -1,7 +1,7 @@
+#include <QApplication>
+
 #include "View/mainwindow.h"
 #include "Data/listcontacts.h"
-
-#include <QApplication>
 
 int main(int argc, char *argv[])
 {
