@@ -1,3 +1,5 @@
+#include <QRegExp>
+
 #include "contact.h"
 
 Contact::Contact()
@@ -24,4 +26,9 @@ bool Contact::operator==(const Contact &other)
             m_department == other.m_department &&
             m_roomNumber == other.m_roomNumber &&
             m_phone      == other.m_phone);
+}
+
+bool Contact::checkRegExp()
+{
+    return true;
 }

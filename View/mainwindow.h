@@ -32,6 +32,8 @@ private:
     void updateTree();
     void findWindow();
     void addWindow();
+    void exportToXml();
+    void importFromXml();
 
     QTreeView* treeView;
     TreeModel* model;

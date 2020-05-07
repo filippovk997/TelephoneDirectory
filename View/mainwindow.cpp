@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(findMainButton, &QAbstractButton::clicked, this, &MainWindow::findWindow);
     connect(addMainButton, &QAbstractButton::clicked, this, &MainWindow::addWindow);
+    connect(importMainButton, &QAbstractButton::clicked, this, &MainWindow::importFromXml);
+    connect(exportMainButton, &QAbstractButton::clicked, this, &MainWindow::exportToXml);
 }
 
 void MainWindow::contactsTree()
@@ -91,6 +93,42 @@ void MainWindow::addWindow()
         lc->addContact(addContact);
         updateTree();
     }
+}
+
+void MainWindow::exportToXml()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Export contacts to file xml"), "",
+        tr("xml (*.xml);;All Files (*)"));
+
+    if (fileName.isEmpty())
+        return;
+    else {
+        lc->toXml(fileName);
+    }
+
+//        QFile file(fileName);
+//        if (!file.open(QIODevice::WriteOnly)) {
+//            QMessageBox::information(this, tr("Unable to export to xml"),
+//                file.errorString());
+//            return;
+//        }
+
+}
+
+void MainWindow::importFromXml()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Import contacts from file xml"), "",
+        tr("xml (*.xml);;All Files (*)"));
+
+    if (fileName.isEmpty())
+        return;
+    else {
+        lc->fromXml(fileName);
+        updateTree();
+    }
+
 }
 
 void MainWindow::openItemDialogDoubleClicked()

@@ -1,6 +1,6 @@
 #include <algorithm>
-#include <QFile>
-#include <QTextStream>
+#include <QtXml>
+#include <QMessageBox>
 
 #include "listcontacts.h"
 
@@ -16,10 +16,8 @@ bool ListContacts::addContact(const Contact &contact)
         return false;
     }
     if (!dbm->insertItem(contact)) {
-            qDebug() << "insertItem(): " << false << Qt::endl;
             return false;
     }
-    qDebug() << "insertItem(): " << true << Qt::endl;
     listContacts.push_back(contact);
 
     return true;
@@ -32,10 +30,8 @@ bool ListContacts::deleteContact(const Contact &contact)
         return false;
     }
     if (!dbm->deleteItem(contact)) {
-        qDebug() << "deleteItem(): " << false << Qt::endl;
         return false;
     }
-    qDebug() << "deleteItem(): " << true << Qt::endl;
     listContacts.erase(iteratorFind);
 
     return true;
@@ -48,10 +44,8 @@ bool ListContacts::changeContact(const Contact &newC, const Contact &oldC)
         return false;
     }
     if (!dbm->updateItem(newC, oldC)) {
-        qDebug() << "updateItem(): " << false << Qt::endl;
         return false;
     }
-    qDebug() << "updateItem(): " << true << Qt::endl;
     size_t index = std::distance(listContacts.begin(), iteratorFind);
     listContacts[index] = newC;
 
@@ -68,6 +62,90 @@ void ListContacts::show()
                  << ", " << listContacts[i].m_phone
                  << "}" << Qt::endl;
     }
+}
+
+void ListContacts::toXml(const QString& fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly)) {
+        return;
+    }
+
+    QXmlStreamWriter stream(&file);
+
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+    stream.writeStartElement("TelephoneDirectory");
+    for (const Contact& contact : listContacts) {
+        stream.writeStartElement("Contact");
+        stream.writeTextElement("name", contact.m_name);
+        stream.writeTextElement("position", contact.m_position);
+        stream.writeTextElement("department", contact.m_department);
+        stream.writeTextElement("roomnumber", QString::number(contact.m_roomNumber));
+        stream.writeTextElement("phone", contact.m_phone);
+        stream.writeEndElement(); // Contact
+    }
+    stream.writeEndElement(); // TelephoneDirectory
+    stream.writeEndDocument();
+
+    file.close();
+}
+
+void ListContacts::fromXml(const QString& fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    bool addError = false;
+    std::vector<Contact> addListContacts;
+    QXmlStreamReader xml(&file);
+
+    if (xml.readNextStartElement()) {
+        if (xml.name() == "TelephoneDirectory") {
+            while (xml.readNextStartElement()) {
+                if (xml.name() == "Contact") {
+                    Contact contact;
+                    while (xml.readNextStartElement()) {
+                        if (xml.name() == "name") {
+                            contact.m_name = xml.readElementText();
+                        }
+                        else if (xml.name() == "position") {
+                            contact.m_position = xml.readElementText();
+                        }
+                        else if (xml.name() == "department") {
+                            contact.m_department = xml.readElementText();
+                        }
+                        else if (xml.name() == "roomnumber") {
+                            contact.m_roomNumber = xml.readElementText().toLong();
+                        }
+                        else if (xml.name() == "phone") {
+                            contact.m_phone = xml.readElementText();
+                        }
+                        else {
+                            addError = true;
+                        }
+                    }
+                    if (!addError)
+                        addListContacts.push_back(contact);
+                }
+                else {
+                    addError = true;
+                }
+            }
+        }
+        else {
+            return;
+        }
+    }
+    if (!addError) {
+        listContacts = addListContacts;
+    }
+
+    file.close();
 }
 
 QString ListContacts::toTreeModel() const

@@ -24,6 +24,9 @@ public:
     bool changeContact(const Contact& newC, const Contact& oldC);
     void show();
 
+    void toXml(const QString& fileName);
+    void fromXml(const QString& fileName);
+
     QString toTreeModel() const;
     QStringList getPositions() const;
     QStringList getDepartments() const;
