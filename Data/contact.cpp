@@ -1,4 +1,6 @@
 #include <QRegExp>
+#include <QDebug>
+#include <QMessageBox>
 
 #include "contact.h"
 
@@ -28,7 +30,29 @@ bool Contact::operator==(const Contact &other)
             m_phone      == other.m_phone);
 }
 
-bool Contact::checkRegExp()
+bool Contact::checkRegExp() const
 {
+    QRegExp nameRegExp("^[А-Я][а-я]{,20}\\s[А-Я][а-я]{,20}\\s[А-Я][а-я]{,20}$");
+    QRegExp positionRegExp("^[A-Я][а-я]{,20}$");
+    QRegExp departmentRegExp("^[А-Я]{3}[1-9]$");
+    QRegExp roomNumberRegExp("^\\d{5}$");
+    QRegExp phoneRegExp("^\\+79\\d{9}$");
+
+    if (!nameRegExp.exactMatch(m_name)) {
+        return false;
+    }
+    if (!positionRegExp.exactMatch(m_position)) {
+        return false;
+    }
+    if (!departmentRegExp.exactMatch(m_department)) {
+        return false;
+    }
+    if (!roomNumberRegExp.exactMatch(QString::number(m_roomNumber))) {
+        return false;
+    }
+    if (!phoneRegExp.exactMatch(m_phone)) {
+        return false;
+    }
+
     return true;
 }

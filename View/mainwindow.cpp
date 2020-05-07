@@ -90,8 +90,18 @@ void MainWindow::addWindow()
         if (addContact == Contact()) {
             return;
         }
-        lc->addContact(addContact);
-        updateTree();
+        if (lc->addContact(addContact)) {
+            updateTree();
+        }
+        else {
+            QMessageBox::information(this, tr("Неверный ввод"),
+                                     tr("Введен неправильный формат данных. "
+                                        "Пример: ФИО: 'Иванов Иван Иванович', "
+                                        "Должность: 'Директор', "
+                                        "Подразделение: 'АБВ1', "
+                                        "Номер комнаты: 12345, "
+                                        "Номер телефона: '+79123456789'"));
+        }
     }
 }
 
@@ -106,14 +116,6 @@ void MainWindow::exportToXml()
     else {
         lc->toXml(fileName);
     }
-
-//        QFile file(fileName);
-//        if (!file.open(QIODevice::WriteOnly)) {
-//            QMessageBox::information(this, tr("Unable to export to xml"),
-//                file.errorString());
-//            return;
-//        }
-
 }
 
 void MainWindow::importFromXml()
@@ -128,7 +130,6 @@ void MainWindow::importFromXml()
         lc->fromXml(fileName);
         updateTree();
     }
-
 }
 
 void MainWindow::openItemDialogDoubleClicked()

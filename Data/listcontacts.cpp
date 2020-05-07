@@ -12,9 +12,10 @@ ListContacts::ListContacts()
 
 bool ListContacts::addContact(const Contact &contact)
 {
-    if (contact.m_name.isEmpty()) {
+    if (!contact.checkRegExp()) {
         return false;
     }
+
     if (!dbm->insertItem(contact)) {
             return false;
     }
@@ -39,6 +40,10 @@ bool ListContacts::deleteContact(const Contact &contact)
 
 bool ListContacts::changeContact(const Contact &newC, const Contact &oldC)
 {
+    if (!newC.checkRegExp()) {
+        return false;
+    }
+
     auto iteratorFind = std::find(listContacts.begin(), listContacts.end(), oldC);
     if (iteratorFind == listContacts.end()) {
         return false;

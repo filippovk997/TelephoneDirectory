@@ -12,7 +12,7 @@ public:
 
     bool operator==(const Contact& other);
 
-    bool checkRegExp();
+    bool checkRegExp() const;
 
     QString m_name;
     QString m_position;
