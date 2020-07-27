@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TelephoneDirectory>
+    <Contact>
+        <name>Иванов Иван Иванович</name>
+        <position>Директор</position>
+        <department>НИЛ1</department>
+        <roomnumber>26701</roomnumber>
+        <phone>+79279876551</phone>
+    </Contact>
+    <Contact>
+        <name>Алексеев Алексей Алексеевич</name>
+        <position>Техник</position>
+        <department>НИЛ1</department>
+        <roomnumber>20101</roomnumber>
+        <phone>+79279876562</phone>
+    </Contact>
+    <Contact>
+        <name>Петров Петр Петрович</name>
+        <position>Тестировщик</position>
+        <department>ПТИ1</department>
+        <roomnumber>20102</roomnumber>
+        <phone>+79279876553</phone>
+    </Contact>
+    <Contact>
+        <name>Игорев Игорь Игоревич</name>
+        <position>Тестировщик</position>
+        <department>ПТИ1</department>
+        <roomnumber>20101</roomnumber>
+        <phone>+79279876552</phone>
+    </Contact>
+    <Contact>
+        <name>Владимиров Владимир Владимирович</name>
+        <position>Техник</position>
+        <department>НИЛ1</department>
+        <roomnumber>20101</roomnumber>
+        <phone>+79279876563</phone>
+    </Contact>
+    <Contact>
+        <name>Васильев Василий Васильевич</name>
+        <position>Тестировщик</position>
+        <department>ПТИ1</department>
+        <roomnumber>20111</roomnumber>
+        <phone>+79279876555</phone>
+    </Contact>
+    <Contact>
+        <name>Васильев Василий Васильевич</name>
+        <position>Тестировщик</position>
+        <department>ПТИ1</department>
+        <roomnumber>20111</roomnumber>
+        <phone>+79279876556</phone>
+    </Contact>
+</TelephoneDirectory>
